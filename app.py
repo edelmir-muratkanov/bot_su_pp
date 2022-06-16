@@ -1,10 +1,16 @@
 import logging
 import os
-from aiogram import Dispatcher, executor
+from aiogram import Dispatcher, executor, types
 
 from data.config import APP_HOST, WEBHOOK_PATH, WEBHOOK_URL
+from keyboards.default import markups
 from loader import bot, dp, db
 import handlers
+
+
+@dp.message_handler(commands='start')
+async def cmd_start(message: types.Message):
+    await message.answer('~~Привет~~\nЯ бот хранитель знаний.\nПользуйтесь клавиатурой.\nКоманда help бесполезна 😁.', reply_markup=markups.start_markup())
 
 
 async def on_startup(dp: Dispatcher):

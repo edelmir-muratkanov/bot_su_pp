@@ -10,8 +10,10 @@ class DatabaseManager:
         self.cur = self.conn.cursor()
 
     def create_tables(self):
-        self.query('CREATE TABLE IF NOT EXISTS Books (id INTEGER PRIMARY KEY AUTOINCREMENT,chat_id INTEGER NOT NULL,name TEXT NOT NULL,description TEXT,url TEXT NOT NULL)')
+        self.query('CREATE TABLE IF NOT EXISTS Books (id INTEGER PRIMARY KEY AUTOINCREMENT, chat_id INTEGER NOT NULL,name TEXT NOT NULL,description TEXT,url TEXT NOT NULL)')
         self.query('CREATE TABLE IF NOT EXISTS Courses (id INTEGER PRIMARY KEY AUTOINCREMENT, chat_id INTEGER NOT NULL, name TEXT NOT NULL, description TEXT, url TEXT NOT NULL)')
+        self.query(
+            'CREATE TABLE IF NOT EXISTS Youtubes (id INTEGER PRIMARY KEY AUTOINCREMENT, url TEXT NOT NULL)')
 
     def query(self, arg, values=None):
         if values is None:
@@ -39,3 +41,24 @@ class DatabaseManager:
 
     def __del__(self):
         self.conn.close()
+
+
+"""
+====== Books ======
+id          INTEGER
+chat_id     INTEGER
+name        TEXT
+description TEXT
+url         TEXT
+
+====== Courses ======
+id          INTEGER
+chat_id     INTEGER
+name        TEXT
+description TEXT
+url         TEXT
+
+=== Youtubes ===
+id      INTEGER
+url     TEXT
+"""
