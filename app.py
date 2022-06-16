@@ -1,25 +1,49 @@
+import logging
+import os
 from aiogram import Dispatcher, executor
 
-from data.db import sql_start
-from keyboards import *
-from handlers import dp
+from data.config import APP_HOST, WEBHOOK_PATH, WEBHOOK_URL
+from loader import bot, dp, db
+import handlers
 
 
 async def on_startup(dp: Dispatcher):
-    sql_start()
-    print('Bot enabled')
+    logging.basicConfig(level=logging.INFO)
+    logging.info('Bot is starting...')
+
+    db.create_tables()
+
+    await dp.bot.delete_webhook()
+    await dp.bot.set_webhook(WEBHOOK_URL)
+
+    logging.info('Bot is online')
 
 
 async def on_shutdown(dp: Dispatcher):
-    dp.storage.close()
-    dp.storage.wait_closed()
-    print('Bot disabled')
+    logging.warning('Bot is shutting down...')
+
+    await dp.bot.delete_webhook()
+    await dp.storage.close()
+    await dp.storage.wait_closed()
+    logging.warning('Bot is down')
 
 
 if __name__ == '__main__':
-    executor.start_polling(
-        dp,
-        on_startup=on_startup,
-        on_shutdown=on_shutdown,
-        skip_updates=True
-    )
+
+    if 'HEROKU' in list(os.environ.keys()):
+        executor.start_webhook(
+            dispatcher=dp,
+            webhook_path=WEBHOOK_PATH,
+            on_startup=on_startup,
+            on_shutdown=on_shutdown,
+            skip_updates=True,
+            host=APP_HOST,
+            port=APP_HOST
+        )
+    else:
+        executor.start_polling(
+            dispatcher=dp,
+            on_startup=on_startup,
+            on_shutdown=on_shutdown,
+            skip_updates=True
+        )

@@ -33,7 +33,6 @@ async def show_all_cards(query: CallbackQuery):
 
 
 @dp.callback_query_handler(lambda m: m.data in ['show_all_categories', 'book_category_return'])
-# @dp.callback_query_handler(lambda m: m.data == 'show_all_categories')
 async def show_all_categories(query: CallbackQuery):
     await bot.send_message(
         query.from_user.id,
