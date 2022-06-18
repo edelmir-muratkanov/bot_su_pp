@@ -185,6 +185,6 @@ async def add_youtube_course_callback(query: CallbackQuery):
 
 @dp.message_handler(state=YoutubeState.link)
 async def set_youtube_link_state(message: Message, state: FSMContext):
-    db.query('INSERT INTO youtubes VALUES (?)', (message.text, ))
+    db.query('INSERT INTO youtubes (chat_id, url) VALUES (?, ?)', (message.from_user.id, message.text))
     await message.answer('Видео успешно добавлено')
     await state.finish()
