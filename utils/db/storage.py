@@ -60,5 +60,6 @@ url         TEXT
 
 === Youtubes ===
 id      INTEGER
+chat_id INTEGER 
 url     TEXT
 """

@@ -1,4 +1,3 @@
-from email import message
 from aiogram.types import Message, ChatActions
 
 from loader import dp, db, bot
@@ -21,22 +20,24 @@ async def all_cards(message: Message):
         (message.from_user.id, )
     )
 
-    if not len(books) and not len(courses) and not len(youtubes):
+    if not len(books) or not len(courses) or not len(youtubes):
         await message.answer('Карточек нет')
     else:
         await bot.send_chat_action(message.from_user.id, ChatActions.TYPING)
         for id, _, name, description, url in books:
             await message.answer(
-                "<b><a href={}>{}</a></b>\n{}".format(url, name, description),
+                "<b><a href='{}'>{}</a></b>\n{}".format(
+                    url, name, description),
                 reply_markup=imk.book_card_markup(id)
             )
         for id, _, name, description, url in books:
             await message.answer(
-                "<b><a href={}>{}</a></b>\n{}".format(url, name, description),
+                "<b><a href='{}'>{}</a></b>\n{}".format(
+                    url, name, description),
                 reply_markup=imk.course_card_markup(id)
             )
-        for id, url in youtubes:
-            await message.answer(url, reply_markup=imk.youtube_card_markup)
+        for id, chat_id, url in youtubes:
+            await message.answer(url, reply_markup=imk.youtube_card_markup(id))
 
 
 @dp.message_handler(text=dmk.categories)

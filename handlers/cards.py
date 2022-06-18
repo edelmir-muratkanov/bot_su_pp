@@ -39,7 +39,8 @@ async def view_cards_book_callback(query: CallbackQuery):
         await bot.send_chat_action(query.from_user.id, ChatActions.TYPING)
         for id, name, description, url in items:
             await query.message.answer(
-                "<b><a href={}>{}</a></b>\n{}".format(url, name, description),
+                "<b><a href='{}'>{}</a></b>\n{}".format(
+                    url, name, description),
                 reply_markup=markups.book_card_markup(id)
             )
         await query.message.delete()
@@ -99,7 +100,8 @@ async def view_cards_course_callback(query: CallbackQuery):
         await bot.send_chat_action(query.from_user.id, ChatActions.TYPING)
         for id, name, description, url in items:
             await query.message.answer(
-                "<b><a href={}>{}</a></b>\n{}".format(url, name, description),
+                "<b><a href='{}'>{}</a></b>\n{}".format(
+                    url, name, description),
                 reply_markup=markups.course_card_cb(id)
             )
         await query.message.delete()
@@ -152,20 +154,19 @@ async def set_course_link_state(message: Message, state: FSMContext):
 
 # YOUTUBE
 
-
-@dp.callback_query_handler(markups.youtube_card_cb.filter(action='view'))
+@dp.callback_query_handler(markups.youtube_category_cb.filter(action='view'))
 async def view_cards_youtube_callback(query: CallbackQuery):
     items = db.fetchall(
-        'SELECT id, url FROM Youtubes WHERE chat_id = ?',
-        (query.from_user.id,)
+        'SELECT * FROM Youtubes WHERE chat_id = ?',
+        (query.from_user.id, )
     )
     if len(items) == 0:
         await query.message.answer('Карточек нет')
         await query.message.delete()
     else:
         await bot.send_chat_action(query.from_user.id, ChatActions.TYPING)
-        for id, url in items:
-            await query.message.answer(url, reply_markup=markups.youtube_card_cb(id))
+        for id, chat_id, url in items:
+            await query.message.answer(url, reply_markup=markups.youtube_card_markup(id))
         await query.message.delete()
 
 
@@ -185,6 +186,7 @@ async def add_youtube_course_callback(query: CallbackQuery):
 
 @dp.message_handler(state=YoutubeState.link)
 async def set_youtube_link_state(message: Message, state: FSMContext):
-    db.query('INSERT INTO youtubes (chat_id, url) VALUES (?, ?)', (message.from_user.id, message.text))
+    db.query('INSERT INTO youtubes (chat_id, url) VALUES (?, ?)',
+             (message.from_user.id, message.text))
     await message.answer('Видео успешно добавлено')
     await state.finish()
