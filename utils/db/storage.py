@@ -13,7 +13,7 @@ class DatabaseManager:
         self.query('CREATE TABLE IF NOT EXISTS Books (id INTEGER PRIMARY KEY AUTOINCREMENT, chat_id INTEGER NOT NULL,name TEXT NOT NULL,description TEXT,url TEXT NOT NULL)')
         self.query('CREATE TABLE IF NOT EXISTS Courses (id INTEGER PRIMARY KEY AUTOINCREMENT, chat_id INTEGER NOT NULL, name TEXT NOT NULL, description TEXT, url TEXT NOT NULL)')
         self.query(
-            'CREATE TABLE IF NOT EXISTS Youtubes (id INTEGER PRIMARY KEY AUTOINCREMENT, url TEXT NOT NULL)')
+            'CREATE TABLE IF NOT EXISTS Youtubes (id INTEGER PRIMARY KEY AUTOINCREMENT, chat_id INTEGER NOT NULL, url TEXT NOT NULL)')
 
     def query(self, arg, values=None):
         if values is None:
